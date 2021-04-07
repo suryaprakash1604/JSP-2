@@ -1,0 +1,265 @@
+1
+
+//Input.html
+
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+<form action="http://localhost:8080/J2EEProject/EmployeeSearch.jsp" >
+Employee Id:<input type="number" name="n1"><br/>
+<button type="submit" value="Submit">Search</button>
+
+</form>
+</body>
+</html>
+
+
+//EmployeeSearch.jsp
+
+<%@page import="java.sql.DriverManager"%>
+<%@page import="java.sql.ResultSet"%>
+<%@page import="java.sql.Statement"%>
+<%@page import="java.sql.Connection"%>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Database</title>
+</head>
+<body>
+<%
+String driverName = "com.mysql.jdbc.Driver";
+String connectionUrl = "jdbc:mysql://localhost:3306/";
+String dbName = "handson";
+String userId = "root";
+String password = "logan1704";
+
+try {
+Class.forName(driverName);
+} catch (ClassNotFoundException e) {
+e.printStackTrace();
+}
+
+Connection connection = null;
+Statement statement = null;
+ResultSet resultSet = null;
+%>
+
+<%
+try {
+ String n=request.getParameter("n1");
+connection = DriverManager.getConnection(
+connectionUrl + dbName, userId, password);
+statement = connection.createStatement();
+String sql = "SELECT * FROM employee where empid='"+n+"'";
+resultSet = statement.executeQuery(sql);
+
+
+if(sql!=null){
+	RequestDispatcher rd=request.getRequestDispatcher("/RegisteredSearch.jsp");
+	rd.forward(request, response);
+}
+else{
+	RequestDispatcher rd=request.getRequestDispatcher("/Error.jsp");
+	rd.forward(request, response);
+}
+} catch (Exception e) {
+e.printStackTrace();
+}
+%>
+</body>
+</html>
+
+
+//RegisteredSearch.jsp
+<%@page import="java.sql.DriverManager"%>
+<%@page import="java.sql.ResultSet"%>
+<%@page import="java.sql.Statement"%>
+<%@page import="java.sql.Connection"%>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+
+<%
+String driverName = "com.mysql.jdbc.Driver";
+String connectionUrl = "jdbc:mysql://localhost:3306/";
+String dbName = "handson";
+String userId = "root";
+String password = "logan1704";
+
+try {
+Class.forName(driverName);
+} catch (ClassNotFoundException e) {
+e.printStackTrace();
+}
+
+Connection connection = null;
+Statement statement = null;
+ResultSet resultSet = null;
+%>
+<table border='1'>
+<tr>
+
+</tr>
+<tr>
+<td><b>EmpId</b></td>
+<td><b>Name</b></td>
+<td><b>Age</b></td>
+<td><b>Gender</b></td>
+<td><b>Deptname</b></td>
+<td><b>Basic</b></td>
+<td><b>Grade</b></td>
+
+</tr>
+<%
+try {
+ String n=request.getParameter("n1");
+connection = DriverManager.getConnection(
+connectionUrl + dbName, userId, password);
+statement = connection.createStatement();
+String sql = "SELECT * FROM employee where empid='"+n+"'";
+resultSet = statement.executeQuery(sql);
+
+while (resultSet.next()) {
+%>
+<tr>
+
+<td><%=resultSet.getString("Empid")%></td>
+<td><%=resultSet.getString("Name")%></td>
+<td><%=resultSet.getString("age")%></td>
+<td><%=resultSet.getString("Gender")%></td>
+<td><%=resultSet.getString("Deptname")%></td>
+<td><%=resultSet.getString("Basic")%></td>
+<td><%=resultSet.getString("Grade")%></td>
+
+</tr>
+
+<%
+}
+
+} catch (Exception e) {
+e.printStackTrace();
+}
+%>
+</table>
+</body>
+</html>
+
+//Error.jsp
+
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+<h1>Not Match</h1>
+</body>
+</html>
+
+
+
+2
+
+//Index.jsp
+
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+<form action="http://localhost:8080/J2EEProject/Result.jsp">
+Name:<input type="text" name="name"><br/>
+Employee Code:<input type="text" name="code"><br/>
+Salary:<input type="text" name="salary"><br/>
+<input type="submit">
+
+</form>
+</body>
+</html>
+
+
+//Result.jsp
+
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+<jsp:useBean id="hello" class="com.pack.Employee1">
+	<jsp:setProperty name="hello" property="name"/>
+	<jsp:setProperty name="hello" property="code"/>
+	<jsp:setProperty name="hello" property="salary"/>
+</jsp:useBean>
+Name: <jsp:getProperty  name="hello" property="name"/><br>
+Employee Code: <jsp:getProperty name="hello" property="code"/><br/>
+Salary:<jsp:getProperty name="hello" property="salary"/><br/>
+</body>
+</html>
+
+
+//Employee1.java
+
+package com.pack;
+
+public class Employee1 {
+	int code;
+	String name;
+	float salary;
+	
+	public int getCode() {
+		return code;
+	}
+	public void setCode(int code) {
+		this.code = code;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public float getSalary() {
+		return salary;
+	}
+	public void setSalary(float salary) {
+		this.salary = salary;
+	}
+	public Employee1(int code, String name, float salary) {
+		super();
+		this.code = code;
+		this.name = name;
+		this.salary = salary;
+	}
+	public Employee1() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	
+}
